@@ -1,0 +1,17 @@
+[
+  {
+    "modid": "btfixes",
+    "name": "BTFixes",
+    "description": "Minimally invasive fixes for Battle Towers",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "authorList": [
+      "ACGaming"
+    ],
+    "dependencies": [
+      "mixinbooter",
+      "battletowers"
+    ]
+  }
+]

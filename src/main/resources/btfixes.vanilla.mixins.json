@@ -1,0 +1,7 @@
+{
+  "package": "mod.acgaming.btfixes.mixin.vanilla",
+  "refmap": "btfixes.refmap.json",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": ["MinecraftServerMixin"]
+}
