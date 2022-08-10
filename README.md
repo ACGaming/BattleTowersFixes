@@ -5,6 +5,6 @@
 * Fixed loot chests with custom loot tables
 * Possibility of utilizing namespaced loot tables
 * Faster world loading (*inspired* by VanillaFix, LOL)
-* *Planned: Difficulty persistent tower golems*
+* Difficulty persistent tower golems (no despawning in peaceful mode)
 
 Requires [AtomicStryker's Battle Towers](https://www.curseforge.com/minecraft/mc-mods/atomicstrykers-battle-towers).
