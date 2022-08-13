@@ -11,40 +11,22 @@ import mod.acgaming.btfixes.BTFixes;
 @Config(modid = BTFixes.MODID, name = "battletowers_fixes")
 public class BTFixesConfig
 {
-    @Config.RequiresWorldRestart
-    @Config.Name("Cobblestone Variants")
-    @Config.Comment("If cobblestone tower variants should be allowed to generate.")
-    public static boolean cobblestoneVariant = true;
-
-    @Config.RequiresWorldRestart
-    @Config.Name("Stone Variants")
-    @Config.Comment("If stone tower variants should be allowed to generate.")
-    public static boolean stoneVariant = true;
-
-    @Config.RequiresWorldRestart
-    @Config.Name("Sandstone Variants")
-    @Config.Comment("If sandstone tower variants should be allowed to generate.")
-    public static boolean sandstoneVariant = true;
-
-    @Config.RequiresWorldRestart
-    @Config.Name("Mossy Variants")
-    @Config.Comment("If mossy tower variants should be allowed to generate.")
-    public static boolean mossyVariant = true;
-
-    @Config.RequiresWorldRestart
-    @Config.Name("Ice Variants")
-    @Config.Comment("If ice tower variants should be allowed to generate.")
-    public static boolean iceVariant = true;
-
-    @Config.RequiresWorldRestart
-    @Config.Name("Jungle Variants")
-    @Config.Comment("If jungle tower variants should be allowed to generate.")
-    public static boolean jungleVariant = true;
-
-    @Config.RequiresWorldRestart
-    @Config.Name("Nether Variants")
-    @Config.Comment("If nether tower variants should be allowed to generate.")
-    public static boolean netherVariant = true;
+    @Config.RequiresMcRestart
+    @Config.Name("Tower Variants")
+    @Config.Comment({"Usage of the tower variant builder:",
+        "UNIQUE_NAME;THEME;WALL_BLOCK;WALL_BLOCK_METADATA;LIGHT_BLOCK;LIGHT_BLOCK_METADATA;FLOOR_BLOCK;FLOOR_BLOCK_METADATA;STAIR_BLOCK;STAIR_BLOCK_METADATA",
+        "Available themes: default, sand, snow, water, foliage, nether"
+    })
+    public static String[] towerVariants = new String[]
+        {
+            "cobble_variant;default;minecraft:cobblestone;0;minecraft:torch;0;minecraft:double_stone_slab;0;minecraft:stone_stairs;0",
+            "stone_variant;default;minecraft:stone;0;minecraft:torch;0;minecraft:double_stone_slab;0;minecraft:stone_brick_stairs;0",
+            "sandstone_variant;sand;minecraft:sandstone;0;minecraft:torch;0;minecraft:double_stone_slab;0;minecraft:sandstone_stairs;0",
+            "ice_variant;snow;minecraft:ice;0;minecraft:air;0;minecraft:snow;0;minecraft:quartz_stairs;0",
+            "mossy_variant;water;minecraft:mossy_cobblestone;0;minecraft:torch;0;minecraft:double_stone_slab;0;minecraft:stone_stairs;0",
+            "jungle_variant;foliage;minecraft:log;3;minecraft:web;0;minecraft:dirt;0;minecraft:jungle_stairs;0",
+            "nether_variant;nether;minecraft:netherrack;0;minecraft:glowstone;0;minecraft:soul_sand;0;minecraft:nether_brick_stairs;0"
+        };
 
     @Mod.EventBusSubscriber(modid = BTFixes.MODID)
     public static class EventHandler
