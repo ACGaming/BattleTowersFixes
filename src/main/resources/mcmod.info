@@ -1,7 +1,7 @@
 [
   {
     "modid": "btfixes",
-    "name": "BTFixes",
+    "name": "Battle Towers Fixes",
     "description": "Minimally invasive fixes for Battle Towers",
     "version": "${version}",
     "mcversion": "${mcversion}",

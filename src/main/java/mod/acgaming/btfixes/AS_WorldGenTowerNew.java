@@ -1,6 +1,8 @@
 package mod.acgaming.btfixes;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
@@ -10,7 +12,7 @@ import mod.acgaming.btfixes.config.BTFixesConfig;
 
 public class AS_WorldGenTowerNew
 {
-    public static Map<String, String> mapNameTheme = new HashMap<>();
+    public static List<String> themeList = new ArrayList<>();
     public static List<Block> wallBlockID = new ArrayList<>();
     public static List<Integer> wallBlockMetaData = new ArrayList<>();
     public static List<Block> lightBlockID = new ArrayList<>();
@@ -22,33 +24,46 @@ public class AS_WorldGenTowerNew
 
     public static void initTowerVariants()
     {
+        themeList.clear();
+        wallBlockID.clear();
+        wallBlockMetaData.clear();
+        lightBlockID.clear();
+        lightBlockMetaData.clear();
+        floorBlockID.clear();
+        floorBlockMetaData.clear();
+        stairBlockID.clear();
+        stairBlockMetaData.clear();
+
         String[] variantsSplit;
+
+        BTFixes.LOGGER.info("*** REGISTERING BATTLE TOWER VARIANTS ***");
 
         for (String variant : BTFixesConfig.towerVariants)
         {
             variantsSplit = variant.split(";");
 
-            if (mapNameTheme.containsKey(variantsSplit[0])) throw new IllegalArgumentException("[Battle Towers Fixes] Duplicate unique name '" + variantsSplit[0] + "' detected, check your configs!");
-            if (!variantsSplit[1].matches("default|sand|snow|water|foliage|nether")) throw new IllegalArgumentException("[Battle Towers Fixes] Invalid theme name '" + variantsSplit[1] + "' detected, check your configs!");
+            if (!variantsSplit[0].matches("default|sand|red_sand|snow|water|foliage|rare")) throw new IllegalArgumentException("[Battle Towers Fixes] Invalid theme name '" + variantsSplit[1] + "' detected, check your configs!");
 
-            System.out.println(variantsSplit[0] + " " + variantsSplit[1]);
-            mapNameTheme.put(variantsSplit[0], variantsSplit[1]);
+            BTFixes.LOGGER.info("Theme: " + variantsSplit[0]);
+            themeList.add(variantsSplit[0]);
 
-            System.out.println(getBlock(variantsSplit[2]));
-            wallBlockID.add(getBlock(variantsSplit[2]));
-            wallBlockMetaData.add(Integer.parseInt(variantsSplit[3]));
+            BTFixes.LOGGER.info("Wall Block: " + getBlock(variantsSplit[1]));
+            wallBlockID.add(getBlock(variantsSplit[1]));
+            wallBlockMetaData.add(Integer.parseInt(variantsSplit[2]));
 
-            System.out.println(getBlock(variantsSplit[4]));
-            lightBlockID.add(getBlock(variantsSplit[4]));
-            lightBlockMetaData.add(Integer.parseInt(variantsSplit[5]));
+            BTFixes.LOGGER.info("Light Block: " + getBlock(variantsSplit[3]));
+            lightBlockID.add(getBlock(variantsSplit[3]));
+            lightBlockMetaData.add(Integer.parseInt(variantsSplit[4]));
 
-            System.out.println(getBlock(variantsSplit[6]));
-            floorBlockID.add(getBlock(variantsSplit[6]));
-            floorBlockMetaData.add(Integer.parseInt(variantsSplit[7]));
+            BTFixes.LOGGER.info("Floor Block: " + getBlock(variantsSplit[5]));
+            floorBlockID.add(getBlock(variantsSplit[5]));
+            floorBlockMetaData.add(Integer.parseInt(variantsSplit[6]));
 
-            System.out.println(getBlock(variantsSplit[8]));
-            stairBlockID.add(getBlock(variantsSplit[8]));
-            stairBlockMetaData.add(Integer.parseInt(variantsSplit[9]));
+            BTFixes.LOGGER.info("Stair Block: " + getBlock(variantsSplit[7]));
+            stairBlockID.add(getBlock(variantsSplit[7]));
+            stairBlockMetaData.add(Integer.parseInt(variantsSplit[8]));
+
+            BTFixes.LOGGER.info("*****************************************");
         }
     }
 
@@ -60,17 +75,19 @@ public class AS_WorldGenTowerNew
     public static int getRandomTowerOrdinal(String theme, Random random)
     {
         List<Integer> indices = new ArrayList<>();
-        int randomIndex = 0;
+        int randomIndex;
 
-        for (int i = 0; i < mapNameTheme.size(); i++)
+        for (int i = 0; i < themeList.size(); i++)
         {
-            if (mapNameTheme.containsValue(theme))
+            if (themeList.get(i).equals(theme))
             {
                 indices.add(i);
             }
         }
 
         if (indices.size() > 1) randomIndex = indices.get(random.nextInt(indices.size()));
+        else randomIndex = indices.get(0);
+
         return randomIndex;
     }
 }

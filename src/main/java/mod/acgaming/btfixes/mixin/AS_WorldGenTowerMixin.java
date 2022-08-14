@@ -12,13 +12,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 
 import atomicstryker.battletowers.common.*;
 import mod.acgaming.btfixes.AS_WorldGenTowerNew;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 
 @Mixin(AS_WorldGenTower.class)
 public abstract class AS_WorldGenTowerMixin
@@ -43,6 +41,7 @@ public abstract class AS_WorldGenTowerMixin
         int towerChosen;
         int countWater = 0;
         int countSand = 0;
+        int countRedSand = 0;
         int countSnow = 0;
         int countFoliage = 0;
         int countElse = 0;
@@ -52,19 +51,26 @@ public abstract class AS_WorldGenTowerMixin
             int[] pair = candidates[ccounter];
             int checkBlockY = getSurfaceBlockHeight(world, ix + pair[0], kz + pair[1]);
 
-            Block ID = world.getBlockState(new BlockPos(ix + pair[0], checkBlockY, kz + pair[1])).getBlock();
+            BlockPos blockPos = new BlockPos(ix + pair[0], checkBlockY, kz + pair[1]);
+            Block ID = world.getBlockState(blockPos).getBlock();
+            Biome biome = world.getBiome(blockPos);
+            Biome.TempCategory biomeTemp = biome.getTempCategory();
 
-            if (world.getBlockState(new BlockPos(ix + pair[0], checkBlockY + 1, kz + pair[1])).getBlock() == Blocks.SNOW || ID == Blocks.ICE)
+            if (world.getBlockState(blockPos.add(0, 1, 0)).getBlock() == Blocks.SNOW || ID == Blocks.ICE || biome.isSnowyBiome())
             {
-                countSnow++;
+                if (biomeTemp == Biome.TempCategory.COLD) countSnow++;
             }
             else if (ID == Blocks.SAND || ID == Blocks.SANDSTONE)
             {
-                countSand++;
+                if (biomeTemp == Biome.TempCategory.WARM) countSand++;
+            }
+            else if (ID == Blocks.SAND.getStateFromMeta(1).getBlock() || ID == Blocks.HARDENED_CLAY || ID == Blocks.RED_SANDSTONE)
+            {
+                if (biomeTemp == Biome.TempCategory.WARM) countRedSand++;
             }
             else if (ID == Blocks.WATER)
             {
-                countWater++;
+                if (biomeTemp == Biome.TempCategory.OCEAN) countWater++;
             }
             else if (ID == Blocks.LEAVES || ID == Blocks.WATERLILY || ID == Blocks.LOG || ID == Blocks.LOG2)
             {
@@ -100,35 +106,43 @@ public abstract class AS_WorldGenTowerMixin
             }
         }
 
-        int[] nums = {countWater, countSnow, countSand, countFoliage, countElse};
+        int[] nums = {countWater, countSnow, countSand, countRedSand, countFoliage, countElse};
         Arrays.sort(nums);
         int result = nums[nums.length - 1];
 
-        if (AS_WorldGenTowerNew.mapNameTheme.containsValue("sand") && countSand == result)
+        if (AS_WorldGenTowerNew.themeList.contains("sand") && countSand == result)
         {
             towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("sand", random);
         }
-        else if (AS_WorldGenTowerNew.mapNameTheme.containsValue("snow") && countSnow == result)
+        else if (AS_WorldGenTowerNew.themeList.contains("red_sand") && countRedSand == result)
+        {
+            towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("red_sand", random);
+        }
+        else if (AS_WorldGenTowerNew.themeList.contains("snow") && countSnow == result)
         {
             towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("snow", random);
         }
-        else if (AS_WorldGenTowerNew.mapNameTheme.containsValue("water") && countWater == result)
+        else if (AS_WorldGenTowerNew.themeList.contains("water") && countWater == result)
         {
             towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("water", random);
         }
-        else if (AS_WorldGenTowerNew.mapNameTheme.containsValue("foliage") && countFoliage == result)
+        else if (AS_WorldGenTowerNew.themeList.contains("foliage") && countFoliage == result)
         {
             towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("foliage", random);
         }
         else
         {
-            if (AS_WorldGenTowerNew.mapNameTheme.containsValue("nether") && random.nextInt(10) == 0)
+            if (AS_WorldGenTowerNew.themeList.contains("rare") && random.nextInt(10) == 0)
             {
-                towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("nether", random);
+                towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("rare", random);
+            }
+            else if (AS_WorldGenTowerNew.themeList.contains("default"))
+            {
+                towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("default", random);
             }
             else
             {
-                towerChosen = AS_WorldGenTowerNew.getRandomTowerOrdinal("default", random);
+                throw new IllegalArgumentException("[Battle Towers Fixes] No valid battle tower variants detected, check your configs!");
             }
         }
 
@@ -186,7 +200,7 @@ public abstract class AS_WorldGenTowerMixin
                         {
                             if (xIterator > -5 && xIterator < 4)
                             {
-                                buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                             }
                             continue;
                         }
@@ -194,7 +208,7 @@ public abstract class AS_WorldGenTowerMixin
                         {
                             if (xIterator == -5 || xIterator == 4)
                             {
-                                buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                                 continue;
                             }
                             if (zIterator == -6)
@@ -211,7 +225,7 @@ public abstract class AS_WorldGenTowerMixin
                                     }
                                     if (floorIterator == 6 && topFloor)
                                     {
-                                        buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                        buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                                     }
                                     continue;
                                 }
@@ -233,7 +247,7 @@ public abstract class AS_WorldGenTowerMixin
                                 }
                                 else
                                 {
-                                    buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                    buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                                 }
                             }
                             else
@@ -246,7 +260,7 @@ public abstract class AS_WorldGenTowerMixin
                         {
                             if (xIterator == -6 || xIterator == 5)
                             {
-                                buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                                 continue;
                             }
                             if (xIterator <= -6 || xIterator >= 5)
@@ -270,7 +284,7 @@ public abstract class AS_WorldGenTowerMixin
                             {
                                 if (floorIterator < 0 || floorIterator > 3 || underground || zIterator != -1 && zIterator != 0)
                                 {
-                                    buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                    buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                                 }
                                 else
                                 {
@@ -292,7 +306,7 @@ public abstract class AS_WorldGenTowerMixin
                         {
                             if (xIterator == -5 || xIterator == 4)
                             {
-                                buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                                 continue;
                             }
                             if (xIterator <= -5 || xIterator >= 4)
@@ -313,7 +327,7 @@ public abstract class AS_WorldGenTowerMixin
                         {
                             if (xIterator == -4 || xIterator == -3 || xIterator == 2 || xIterator == 3)
                             {
-                                buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                                 continue;
                             }
                             if (xIterator <= -3 || xIterator >= 2)
@@ -326,7 +340,7 @@ public abstract class AS_WorldGenTowerMixin
                             }
                             else
                             {
-                                buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                                buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                             }
                             continue;
                         }
@@ -336,11 +350,11 @@ public abstract class AS_WorldGenTowerMixin
                         }
                         if (floorIterator < 0 || floorIterator > 3 || xIterator != -1 && xIterator != 0)
                         {
-                            buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                            buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                         }
                         else
                         {
-                            buildWallPiece(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, floor, floorIterator);
+                            buildWallPieceNew(world, iCurrent, jCurrent, zCurrent, towerWallBlockID, towerWallMeta, floor, floorIterator);
                         }
                     }
 
@@ -389,8 +403,8 @@ public abstract class AS_WorldGenTowerMixin
                 }
             }
             // chest pedestal
-            world.setBlockState(new BlockPos(ix, builderHeight + 6, kz + 3), towerFloorBlockID.getDefaultState());
-            world.setBlockState(new BlockPos(ix - 1, builderHeight + 6, kz + 3), towerFloorBlockID.getDefaultState());
+            world.setBlockState(new BlockPos(ix, builderHeight + 6, kz + 3), towerFloorBlockID.getStateFromMeta(towerFloorMeta));
+            world.setBlockState(new BlockPos(ix - 1, builderHeight + 6, kz + 3), towerFloorBlockID.getStateFromMeta(towerFloorMeta));
 
             if (builderHeight + 56 >= 120 && floor == 1)
             {
@@ -468,13 +482,34 @@ public abstract class AS_WorldGenTowerMixin
     }
 
     @Shadow
+    protected abstract boolean isBuildableBlockID(Block ID);
+
+    @Unique
+    @SuppressWarnings("deprecation")
+    protected void fillTowerBaseToGroundNew(World world, int i, int j, int k, Block blockID, int blockMeta)
+    {
+        for (int y = j - 1; y > 0 && !this.isBuildableBlockID(world.getBlockState(new BlockPos(i, y, k)).getBlock()); --y)
+        {
+            world.setBlockState(new BlockPos(i, y, k), blockID.getStateFromMeta(blockMeta));
+        }
+    }
+
+    @Shadow
     protected abstract void buildFloorPiece(World world, int i, int j, int k, Block towerFloorBlockID, int towerFloorMeta);
 
     @Shadow
     protected abstract ResourceLocation getMobType(Random random);
 
-    @Shadow
-    protected abstract void buildWallPiece(World world, int i, int j, int k, Block towerWallBlockID, int floor, int floorIterator);
+    @Unique
+    @SuppressWarnings("deprecation")
+    protected void buildWallPieceNew(World world, int i, int j, int k, Block towerWallBlockID, int towerWallMeta, int floor, int floorIterator)
+    {
+        world.setBlockState(new BlockPos(i, j, k), towerWallBlockID.getStateFromMeta(towerWallMeta));
+        if (floor == 1 && floorIterator == 4)
+        {
+            this.fillTowerBaseToGroundNew(world, i, j, k, towerWallBlockID, towerWallMeta);
+        }
+    }
 
     @Shadow
     protected abstract int getSurfaceBlockHeight(World world, int x, int z);

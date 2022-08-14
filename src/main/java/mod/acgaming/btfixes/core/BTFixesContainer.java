@@ -11,9 +11,9 @@ public class BTFixesContainer extends DummyModContainer
     {
         super(new ModMetadata());
         ModMetadata meta = this.getMetadata();
-        meta.modId = "rpglootreduxcore";
-        meta.name = "RPGLoot Redux Core";
-        meta.description = "Core functionality of RPGLoot Redux";
+        meta.modId = "btfixescore";
+        meta.name = "Battle Towers Fixes Core";
+        meta.description = "Core functionality of Battle Towers Fixes";
         meta.version = "1.12.2-1.0.0";
         meta.authorList.add("ACGaming");
     }
