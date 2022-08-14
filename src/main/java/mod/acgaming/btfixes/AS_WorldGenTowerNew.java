@@ -79,10 +79,7 @@ public class AS_WorldGenTowerNew
 
         for (int i = 0; i < themeList.size(); i++)
         {
-            if (themeList.get(i).equals(theme))
-            {
-                indices.add(i);
-            }
+            if (themeList.get(i).equals(theme)) indices.add(i);
         }
 
         if (indices.size() > 1) randomIndex = indices.get(random.nextInt(indices.size()));
