@@ -31,6 +31,11 @@ public class BTFixesConfig
             "rare;minecraft:netherrack;0;minecraft:glowstone;0;minecraft:soul_sand;0;minecraft:nether_brick_stairs;0"
         };
 
+    @Config.RequiresWorldRestart
+    @Config.Name("Buffer Time")
+    @Config.Comment({"Time in ticks when generating should start after world load", "Used for makeshift Loot Tweaker compatibility"})
+    public static int bufferTime = 100;
+
     @Mod.EventBusSubscriber(modid = BTFixes.MODID)
     public static class EventHandler
     {
