@@ -18,7 +18,7 @@ import atomicstryker.battletowers.common.*;
 import mod.acgaming.btfixes.AS_WorldGenTowerNew;
 import org.spongepowered.asm.mixin.*;
 
-@Mixin(AS_WorldGenTower.class)
+@Mixin(value = AS_WorldGenTower.class, remap = false)
 public abstract class AS_WorldGenTowerMixin
 {
     @Shadow
@@ -35,7 +35,7 @@ public abstract class AS_WorldGenTowerMixin
      * @author ACGaming
      * @reason Better configurability
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public int getChosenTowerOrdinal(World world, Random random, int ix, int jy, int kz)
     {
         int towerChosen;
@@ -153,7 +153,7 @@ public abstract class AS_WorldGenTowerMixin
      * @author ACGaming
      * @reason Redirect to new tower types
      */
-    @Overwrite(remap = false)
+    @Overwrite
     @SuppressWarnings("deprecation")
     public void generate(World world, Random random, int ix, int jy, int kz, int towerchoice, boolean underground)
     {

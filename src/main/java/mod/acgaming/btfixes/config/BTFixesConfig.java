@@ -6,6 +6,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import mod.acgaming.btfixes.AS_TowerDestroyerNew;
 import mod.acgaming.btfixes.AS_WorldGenTowerNew;
 import mod.acgaming.btfixes.BTFixes;
 
@@ -14,10 +15,12 @@ public class BTFixesConfig
 {
     @Config.RequiresWorldRestart
     @Config.Name("Tower Variants")
-    @Config.Comment({"Usage of the tower variant builder:",
-        "THEME;WALL_BLOCK;WALL_BLOCK_METADATA;LIGHT_BLOCK;LIGHT_BLOCK_METADATA;FLOOR_BLOCK;FLOOR_BLOCK_METADATA;STAIR_BLOCK;STAIR_BLOCK_METADATA",
-        "Available themes: default, sand, red_sand, snow, water, foliage, rare"
-    })
+    @Config.Comment
+        ({
+            "Usage of the tower variant builder:",
+            "THEME;WALL_BLOCK;WALL_BLOCK_METADATA;LIGHT_BLOCK;LIGHT_BLOCK_METADATA;FLOOR_BLOCK;FLOOR_BLOCK_METADATA;STAIR_BLOCK;STAIR_BLOCK_METADATA",
+            "Available themes: default, sand, red_sand, snow, water, foliage, rare"
+        })
     public static String[] towerVariants = new String[]
         {
             "default;minecraft:cobblestone;0;minecraft:torch;0;minecraft:double_stone_slab;0;minecraft:stone_stairs;0",
@@ -36,6 +39,18 @@ public class BTFixesConfig
     @Config.Comment({"Time in ticks when generating should start after world load", "Used for makeshift Loot Tweaker compatibility"})
     public static int bufferTime = 100;
 
+    @Config.RequiresWorldRestart
+    @Config.Name("Destruction Blacklist")
+    @Config.Comment
+        ({
+            "Blocks that don't get destroyed by collapsing towers",
+            "Syntax: modid:block"
+        })
+    public static String[] destructionBlacklist = new String[]
+        {
+            "tombmanygraves:grave_block"
+        };
+
     @Mod.EventBusSubscriber(modid = BTFixes.MODID)
     public static class EventHandler
     {
@@ -46,7 +61,8 @@ public class BTFixesConfig
             {
                 ConfigManager.sync(BTFixes.MODID, Config.Type.INSTANCE);
                 AS_WorldGenTowerNew.initTowerVariants();
-                BTFixes.LOGGER.info("Battle Tower variants reloaded");
+                AS_TowerDestroyerNew.initDestructionBlacklist();
+                BTFixes.LOGGER.info(BTFixes.NAME + " config reloaded");
             }
         }
     }

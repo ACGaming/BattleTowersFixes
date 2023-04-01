@@ -3,5 +3,5 @@
   "refmap": "btfixes.refmap.json",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
-  "mixins": ["AS_BattleTowersCoreMixin", "AS_EntityGolemMixin", "AS_WorldGenTowerMixin", "TowerStageItemManagerMixin", "WorldGenHandlerMixin"]
+  "mixins": ["AS_BattleTowersCoreMixin", "AS_EntityGolemMixin", "AS_TowerDestroyerMixin", "AS_WorldGenTowerMixin", "TowerStageItemManagerMixin", "WorldGenHandlerMixin"]
 }

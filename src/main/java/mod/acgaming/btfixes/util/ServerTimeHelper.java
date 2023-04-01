@@ -1,4 +1,4 @@
-package mod.acgaming.btfixes;
+package mod.acgaming.btfixes.util;
 
 import net.minecraft.world.DimensionType;
 import net.minecraftforge.event.world.WorldEvent;

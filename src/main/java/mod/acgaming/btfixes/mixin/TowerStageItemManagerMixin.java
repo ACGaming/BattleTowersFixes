@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(TowerStageItemManager.class)
+@Mixin(value = TowerStageItemManager.class, remap = false)
 public class TowerStageItemManagerMixin
 {
     @Shadow
@@ -38,7 +38,7 @@ public class TowerStageItemManagerMixin
      * @author ACGaming
      * @reason Fix parsing
      */
-    @Overwrite(remap = false)
+    @Overwrite
     public List<ItemStack> getStageItemStacks(World world, Random rand, TileEntityChest teChest, int count)
     {
         List<ItemStack> result = new ArrayList<>();

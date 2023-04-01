@@ -1,4 +1,4 @@
-package mod.acgaming.btfixes;
+package mod.acgaming.btfixes.core;
 
 import java.util.ArrayList;
 import java.util.List;

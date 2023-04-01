@@ -30,7 +30,7 @@ public class BTFixesLoadingPlugin implements IFMLLoadingPlugin, IEarlyMixinLoade
     @Override
     public String getModContainerClass()
     {
-        return BTFixesContainer.class.getName();
+        return null;
     }
 
     @Nullable
