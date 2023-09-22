@@ -9,9 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("com.anatawa12.forge:ForgeGradle:2.3-1.0.+") {
-            changing = true
-        }
+        classpath 'com.anatawa12.forge:ForgeGradle:2.3-1.0.8'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
     }
 }
@@ -68,7 +66,7 @@ repositories {
 }
 
 dependencies {
-    deobfCompile "zone.rong:mixinbooter:5.0"
+    deobfCompile "zone.rong:mixinbooter:8.6"
     deobfCompile "curse.maven:atomicstrykers-battle-towers-227877:2817288"
 }
 
