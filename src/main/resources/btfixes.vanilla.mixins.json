@@ -3,5 +3,5 @@
   "refmap": "btfixes.refmap.json",
   "minVersion": "0.8",
   "compatibilityLevel": "JAVA_8",
-  "mixins": ["MinecraftServerMixin"]
+  "mixins": ["EntityMobMixin", "MinecraftServerMixin"]
 }
