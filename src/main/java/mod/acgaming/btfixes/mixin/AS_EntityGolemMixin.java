@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(AS_EntityGolem.class)
+@Mixin(value = AS_EntityGolem.class, remap = false)
 public abstract class AS_EntityGolemMixin extends EntityMob
 {
-    public AS_EntityGolemMixin(World worldIn)
+    protected AS_EntityGolemMixin(World worldIn)
     {
         super(worldIn);
     }
@@ -22,13 +22,22 @@ public abstract class AS_EntityGolemMixin extends EntityMob
     @Shadow
     public abstract void setDormant();
 
-    @Inject(method = "onUpdate", at = @At(value = "HEAD"), cancellable = true)
-    public void onUpdate(CallbackInfo ci)
+    @Inject(method = "checkForVictim", at = @At(value = "HEAD"), cancellable = true)
+    public void checkForVictim(CallbackInfo ci)
     {
         if (this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
         {
+            this.setAttackTarget(null);
             this.setDormant();
-            super.onUpdate();
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "setAwake", at = @At(value = "HEAD"), cancellable = true)
+    public void setAwake(CallbackInfo ci)
+    {
+        if (this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        {
             ci.cancel();
         }
     }
