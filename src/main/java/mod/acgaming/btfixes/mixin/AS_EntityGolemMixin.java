@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 
 import atomicstryker.battletowers.common.AS_EntityGolem;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -18,11 +19,16 @@ public abstract class AS_EntityGolemMixin extends EntityMob
         super(worldIn);
     }
 
+    @Shadow
+    public abstract void setDormant();
+
     @Inject(method = "onUpdate", at = @At(value = "HEAD"), cancellable = true)
     public void onUpdate(CallbackInfo ci)
     {
-        if (!this.world.isRemote && this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        if (this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
         {
+            this.setDormant();
+            super.onUpdate();
             ci.cancel();
         }
     }
