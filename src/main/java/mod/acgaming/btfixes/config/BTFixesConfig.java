@@ -40,6 +40,20 @@ public class BTFixesConfig
     public static int bufferTime = 100;
 
     @Config.RequiresWorldRestart
+    @Config.Name("Dimension Blacklist")
+    @Config.Comment
+            ({
+                    "Dimension IDs where Battle Towers should not generate from worldgen",
+                    "Also prevents Battle Towers position-file load/save handling for those dimensions",
+                    "Example:",
+                    "143",
+                    "32",
+                    "14",
+                    "Leave empty to allow Battle Towers in all dimensions"
+            })
+    public static int[] dimensionBlacklist = new int[0];
+
+    @Config.RequiresWorldRestart
     @Config.Name("Destruction Blacklist")
     @Config.Comment
         ({
