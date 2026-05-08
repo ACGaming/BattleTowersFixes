@@ -40,16 +40,26 @@ public class BTFixesConfig
     public static int bufferTime = 100;
 
     @Config.RequiresWorldRestart
+    @Config.Name("Treat Dimension Blacklist As Whitelist")
+    @Config.Comment
+            ({
+                    "If true, the dimension blacklist is treated as a whitelist instead",
+                    "Whitelist mode: only listed dimensions are allowed",
+                    "Warning: an empty list in whitelist mode blocks Battle Towers in all dimensions"
+            })
+    public static boolean dimensionListIsWhitelist = false;
+
+    @Config.RequiresWorldRestart
     @Config.Name("Dimension Blacklist")
     @Config.Comment
             ({
-                    "Dimension IDs where Battle Towers should not generate from worldgen",
-                    "Also prevents Battle Towers position-file load/save handling for those dimensions",
+                    "Dimension IDs used by the dimension blacklist/whitelist",
+                    "Also affects Battle Towers position-file load/save handling for those dimensions",
                     "Example:",
                     "143",
                     "32",
                     "14",
-                    "Leave empty to allow Battle Towers in all dimensions"
+                    "Leave empty to allow Battle Towers in all dimensions when whitelist mode is disabled"
             })
     public static int[] dimensionBlacklist = new int[0];
 

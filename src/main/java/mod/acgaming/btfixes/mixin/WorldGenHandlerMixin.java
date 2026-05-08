@@ -20,7 +20,7 @@ public class WorldGenHandlerMixin
     @Inject(method = "generate", at = @At("HEAD"), cancellable = true)
     private void btfixes$generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider, CallbackInfo ci)
     {
-        if (btfixes$isDimensionBlacklisted(world))
+        if (btfixes$shouldBlockDimension(world))
         {
             ci.cancel();
             return;
@@ -37,14 +37,14 @@ public class WorldGenHandlerMixin
         /*
          * Keep BattleTowers' original worldMap cleanup behavior.
          * Normally this happens inside eventWorldLoad(), but if we cancel at HEAD
-         * for a blacklisted dimension, preserve this part manually.
+         * for a blocked dimension, preserve this part manually.
          */
         if (WorldGenHandler.shouldClearWorldMap)
         {
             WorldGenHandler.wipeWorldHandles();
             WorldGenHandler.shouldClearWorldMap = false;
         }
-        if (btfixes$isDimensionBlacklisted(event.getWorld()))
+        if (btfixes$shouldBlockDimension(event.getWorld()))
         {
             ci.cancel();
         }
@@ -53,22 +53,36 @@ public class WorldGenHandlerMixin
     @Inject(method = "eventWorldSave", at = @At("HEAD"), cancellable = true)
     private void btfixes$eventWorldSave(WorldEvent.Save event, CallbackInfo ci)
     {
-        if (btfixes$isDimensionBlacklisted(event.getWorld()))
+        if (btfixes$shouldBlockDimension(event.getWorld()))
         {
             ci.cancel();
         }
     }
 
-    private static boolean btfixes$isDimensionBlacklisted(World world)
+    private static boolean btfixes$shouldBlockDimension(World world)
     {
-        if (world == null || world.provider == null || BTFixesConfig.dimensionBlacklist == null)
+        if (world == null || world.provider == null)
         {
             return false;
         }
-        int dimension = world.provider.getDimension();
-        for (int blacklistedDimension : BTFixesConfig.dimensionBlacklist)
+        boolean dimensionIsListed = btfixes$isDimensionListed(world.provider.getDimension());
+
+        if (BTFixesConfig.dimensionListIsWhitelist)
         {
-            if (dimension == blacklistedDimension)
+            return !dimensionIsListed;
+        }
+        return dimensionIsListed;
+    }
+
+    private static boolean btfixes$isDimensionListed(int dimension)
+    {
+        if (BTFixesConfig.dimensionBlacklist == null)
+        {
+            return false;
+        }
+        for (int listedDimension : BTFixesConfig.dimensionBlacklist)
+        {
+            if (dimension == listedDimension)
             {
                 return true;
             }
