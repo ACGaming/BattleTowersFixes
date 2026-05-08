@@ -8,6 +8,6 @@
 * Faster world loading (*inspired* by VanillaFix, LOL)
 * Blacklist for block destruction on tower collapse
 * Difficulty persistent tower golems (no despawning in peaceful mode)
-* Dimension blacklist for Battle Towers world generation and position-file load/save handling
+* Dimension blacklist/whitelist for Battle Towers world generation and position-file load/save handling
 
 Requires [AtomicStryker's Battle Towers](https://www.curseforge.com/minecraft/mc-mods/atomicstrykers-battle-towers) and [MixinBooter](https://www.curseforge.com/minecraft/mc-mods/mixin-booter).
