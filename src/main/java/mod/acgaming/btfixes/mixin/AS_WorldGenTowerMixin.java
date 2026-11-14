@@ -159,6 +159,7 @@ public abstract class AS_WorldGenTowerMixin
     @SuppressWarnings("deprecation")
     public void generate(World world, Random random, int ix, int jy, int kz, int towerchoice, boolean underground)
     {
+        AS_WorldGenTower.TowerTypes towerChosen = AS_WorldGenTower.TowerTypes.values()[towerchoice];
         Block towerWallBlockID = AS_WorldGenTowerNew.wallBlockID.get(towerchoice);
         int towerWallMeta = AS_WorldGenTowerNew.wallBlockMetaData.get(towerchoice);
 
@@ -380,28 +381,24 @@ public abstract class AS_WorldGenTowerMixin
                 TileEntityMobSpawner tileentitymobspawner = (TileEntityMobSpawner) world.getTileEntity(new BlockPos(ix + 2, builderHeight + 6, kz + 2));
                 if (tileentitymobspawner != null)
                 {
-//                        if (!DungeonTweaksCompat.isLoaded)
-//                        {
-                    tileentitymobspawner.getSpawnerBaseLogic().setEntityId(getConfiguredSpawnerMob(world.rand));
-//                        }
-//                        else
-//                        {
-//                            DungeonTweaksCompat.fireDungeonSpawn(tileentitymobspawner, world, random, towerChosen);
-//                        }
+                    if (!DungeonTweaksCompat.isLoaded) {
+                        tileentitymobspawner.getSpawnerBaseLogic().setEntityId(getConfiguredSpawnerMob(world.rand));
+                    } else {
+                        DungeonTweaksCompat.fireDungeonSpawn(tileentitymobspawner, world, random, towerChosen);
+                    }
                 }
 
                 world.setBlockState(new BlockPos(ix - 3, builderHeight + 6, kz + 2), Blocks.MOB_SPAWNER.getDefaultState());
                 tileentitymobspawner = (TileEntityMobSpawner) world.getTileEntity(new BlockPos(ix - 3, builderHeight + 6, kz + 2));
                 if (tileentitymobspawner != null)
                 {
-//                        if (!DungeonTweaksCompat.isLoaded)
-//                        {
-                    tileentitymobspawner.getSpawnerBaseLogic().setEntityId(getConfiguredSpawnerMob(world.rand));
-//                        }
-//                        else
-//                        {
-//                            DungeonTweaksCompat.fireDungeonSpawn(tileentitymobspawner, world, random, towerChosen);
-//                        }
+                    if (!DungeonTweaksCompat.isLoaded)
+                    {
+                        tileentitymobspawner.getSpawnerBaseLogic().setEntityId(getConfiguredSpawnerMob(world.rand));
+                    } else
+                    {
+                        DungeonTweaksCompat.fireDungeonSpawn(tileentitymobspawner, world, random, towerChosen);
+                    }
                 }
             }
             // chest pedestal
