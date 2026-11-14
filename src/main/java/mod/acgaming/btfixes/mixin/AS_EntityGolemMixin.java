@@ -28,7 +28,7 @@ public abstract class AS_EntityGolemMixin extends EntityMob
     @Shadow
     public abstract void setDormant();
 
-    @Inject(method = "checkForVictim", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "checkForVictim", at = @At(value = "HEAD"), cancellable = true)
     public void checkForVictim(CallbackInfo ci)
     {
         if (this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
