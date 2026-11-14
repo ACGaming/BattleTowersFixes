@@ -2,8 +2,10 @@ package mod.acgaming.btfixes.mixin;
 
 import java.util.*;
 
+import mod.acgaming.btfixes.config.BTFixesConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
+import net.minecraft.entity.EntityList;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityChest;
@@ -380,7 +382,7 @@ public abstract class AS_WorldGenTowerMixin
                 {
 //                        if (!DungeonTweaksCompat.isLoaded)
 //                        {
-                    tileentitymobspawner.getSpawnerBaseLogic().setEntityId(getMobType(world.rand));
+                    tileentitymobspawner.getSpawnerBaseLogic().setEntityId(getConfiguredSpawnerMob(world.rand));
 //                        }
 //                        else
 //                        {
@@ -394,7 +396,7 @@ public abstract class AS_WorldGenTowerMixin
                 {
 //                        if (!DungeonTweaksCompat.isLoaded)
 //                        {
-                    tileentitymobspawner.getSpawnerBaseLogic().setEntityId(getMobType(world.rand));
+                    tileentitymobspawner.getSpawnerBaseLogic().setEntityId(getConfiguredSpawnerMob(world.rand));
 //                        }
 //                        else
 //                        {
@@ -509,6 +511,57 @@ public abstract class AS_WorldGenTowerMixin
         {
             this.fillTowerBaseToGroundNew(world, i, j, k, towerWallBlockID, towerWallMeta);
         }
+    }
+
+    @Unique
+    private ResourceLocation getConfiguredSpawnerMob(Random random)
+    {
+        List<ResourceLocation> mobs = new ArrayList<>();
+        List<Integer> weights = new ArrayList<>();
+        int totalWeight = 0;
+
+        for (String entry : BTFixesConfig.spawnerMobs)
+        {
+            try
+            {
+                String[] parts = entry.split(";");
+                if (parts.length != 2)
+                {
+                    continue;
+                }
+
+                ResourceLocation mobId = new ResourceLocation(parts[0].trim());
+                int weight = Integer.parseInt(parts[1].trim());
+                if (weight <= 0 || EntityList.getClass(mobId) == null)
+                {
+                    continue;
+                }
+
+                mobs.add(mobId);
+                weights.add(weight);
+                totalWeight += weight;
+            }
+            catch (Exception ignored)
+            {
+            }
+        }
+
+        if (totalWeight <= 0)
+        {
+            return getMobType(random);
+        }
+
+        int selected = random.nextInt(totalWeight);
+        for (int i = 0; i < mobs.size(); i++)
+        {
+            selected -= weights.get(i);
+            if (selected < 0)
+            {
+                return mobs.get(i);
+            }
+        }
+
+        return getMobType(random);
     }
 
     @Shadow

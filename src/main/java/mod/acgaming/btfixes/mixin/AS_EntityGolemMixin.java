@@ -53,7 +53,7 @@ public abstract class AS_EntityGolemMixin extends EntityMob
     }
 
     @Redirect(method = "onUpdate", at = @At(value = "FIELD", target = "Latomicstryker/battletowers/common/AS_EntityGolem;noTargetCountdown:I", opcode = Opcodes.PUTFIELD, ordinal = 1))
-    private void btfFixTargetCooldown(AS_EntityGolem instance, int value)
+    private void btfixes$fixTargetCooldown(AS_EntityGolem instance, int value)
     {
         EntityLivingBase target = this.getAttackTarget();
 
