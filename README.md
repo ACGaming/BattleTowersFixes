@@ -9,6 +9,7 @@
 * Blacklist for block destruction on tower collapse
 * Difficulty persistent tower golems (no despawning in peaceful mode)
 * Fixes to tower golem behavior
+* Config list to control what mobs can spawn in battle tower mob spawners
 * Dimension blacklist/whitelist for Battle Towers world generation and position-file load/save handling
 
 Requires [AtomicStryker's Battle Towers](https://www.curseforge.com/minecraft/mc-mods/atomicstrykers-battle-towers) and [MixinBooter](https://www.curseforge.com/minecraft/mc-mods/mixin-booter).
